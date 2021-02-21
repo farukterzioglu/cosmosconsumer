@@ -2,25 +2,30 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/syndtr/goleveldb/leveldb"
 
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	"github.com/tendermint/tendermint/types"
 )
 
 // BlockConsumer is a consumer task for blocks
 type BlockConsumer struct {
-	Db *leveldb.DB
+	Db     *leveldb.DB
+	Server string
 }
 
 // NewBlockConsumer method creates a new BlockConsumer
-func NewBlockConsumer(db *leveldb.DB) *BlockConsumer {
+func NewBlockConsumer(db *leveldb.DB, server string) *BlockConsumer {
 	return &BlockConsumer{
-		Db: db,
+		Db:     db,
+		Server: server,
 	}
 }
 
@@ -28,7 +33,7 @@ func NewBlockConsumer(db *leveldb.DB) *BlockConsumer {
 func (consumer *BlockConsumer) ConsumeBlocks(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	client, err := rpchttp.New("tcp://52.137.47.46:26657", "/websocket")
+	client, err := rpchttp.New("tcp://"+*server, "/websocket")
 	if err != nil {
 		fmt.Printf("Got error while creating client, exception: %s \n", err.Error())
 		return
@@ -50,27 +55,8 @@ func (consumer *BlockConsumer) ConsumeBlocks(ctx context.Context, wg *sync.WaitG
 
 	for {
 		select {
-		case e := <-txs:
-			txHash := e.Events["tx.hash"][0]
-			_ = e.Events["tx.height"][0]
-			sender := e.Events["transfer.sender"][0]
-			recipient := e.Events["transfer.recipient"][0]
-			amount := e.Events["transfer.amount"][0]
-
-			data := e.Data.(types.EventDataTx)
-			fmt.Printf("Txhash: %s, Height: %d, Index: %d \n", txHash, data.Height, data.Index)
-			fmt.Printf("From: %s, To: %s, Amount: %s \n", sender, recipient, amount)
-			fmt.Printf("Code: %d, Gas used: %d \n", data.Result.Code, data.Result.GasUsed)
-
-			if false {
-				fmt.Println("Events: ")
-				for i, oneEvent := range data.Result.Events {
-					fmt.Printf("event[%d]: type: %s \n", i, oneEvent.Type)
-					for _, attr := range oneEvent.Attributes {
-						fmt.Printf("Attribute: %s : %s \n", attr.Key, attr.Value)
-					}
-				}
-			}
+		case tx := <-txs:
+			processTransaction(tx)
 		case currenctTime := <-time.After(10 * time.Minute):
 			fmt.Printf("Waiting for new blocks (%s)... \n", currenctTime)
 		case <-ctx.Done():
@@ -78,4 +64,53 @@ func (consumer *BlockConsumer) ConsumeBlocks(ctx context.Context, wg *sync.WaitG
 			return
 		}
 	}
+}
+
+func processTransaction(tx ctypes.ResultEvent) {
+	// TODO: validate tx (e.g. is success)
+	txHash := tx.Events["tx.hash"][0]
+	height, _ := strconv.Atoi(tx.Events["tx.height"][0])
+	sender := tx.Events["transfer.sender"][0]
+	recipient := tx.Events["transfer.recipient"][0]
+	amount := tx.Events["transfer.amount"][0]
+
+	data := tx.Data.(types.EventDataTx)
+	gasUsed := data.Result.GasUsed
+
+	if false {
+		fmt.Printf("Txhash: %s, Height: %d, Index: %d \n", txHash, data.Height, data.Index)
+		fmt.Printf("From: %s, To: %s, Amount: %s \n", sender, recipient, amount)
+		fmt.Printf("Code: %d, Gas used: %d \n", data.Result.Code, gasUsed)
+	}
+
+	if false {
+		fmt.Println("Events: ")
+		for i, oneEvent := range data.Result.Events {
+			fmt.Printf("event[%d]: type: %s \n", i, oneEvent.Type)
+			for _, attr := range oneEvent.Attributes {
+				fmt.Printf("Attribute: %s : %s \n", attr.Key, attr.Value)
+			}
+		}
+	}
+
+	newTx := Transaction{
+		TxHash:    txHash,
+		Height:    height,
+		Sender:    sender,
+		Recipient: recipient,
+		Amount:    amount,
+		GasUsed:   gasUsed,
+	}
+	serializedTx, _ := json.Marshal(newTx)
+	fmt.Printf(string(serializedTx))
+}
+
+// Transaction represents the model to store on leveldb
+type Transaction struct {
+	TxHash    string `json:"tx_hash,omitempty"`
+	Height    int    `json:"height,omitempty"`
+	Sender    string `json:"sender,omitempty"`
+	Recipient string `json:"recipient,omitempty"`
+	Amount    string `json:"amount,omitempty"`
+	GasUsed   int64  `json:"gas_used,omitempty"`
 }

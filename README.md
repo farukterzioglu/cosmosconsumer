@@ -1,3 +1,5 @@
+`go run . -server 0.0.0.0:26657`  
+
 `~/.gaiaconsumer`  
 `~/.gaiaconsumer/config.json`  
 ```json

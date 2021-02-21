@@ -15,7 +15,7 @@ import (
 
 var (
 	dataDir    = flag.String("data-dir", ".gaiaconsumer", "")
-	port       = flag.String("port", "port", "")
+	server     = flag.String("server", "0.0.0.0:26657", "host:port")
 	startHeigh = flag.String("start-height", "-1", "")
 )
 
@@ -71,8 +71,9 @@ func main() {
 	ctx, cancelFunc := context.WithCancel(context.Background())
 	wg := &sync.WaitGroup{}
 
+	fmt.Printf("Connecting to server: %s\n", *server)
 	var consumer *BlockConsumer
-	consumer = NewBlockConsumer(db)
+	consumer = NewBlockConsumer(db, *server)
 	wg.Add(1)
 	go consumer.ConsumeBlocks(ctx, wg)
 
