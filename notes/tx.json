@@ -1,0 +1,103 @@
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+        "query": "tm.event='Tx'",
+        "data": {
+            "type": "tendermint/event/Tx",
+            "value": {
+                "TxResult": {
+                    "height": "583709",
+                    "tx": "Cp0BCpEBChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEnEKLWNvc21vczE3eWo0NW1yZ3Z3ZXpqOWpsbmhjZ2Qyd3IzM3VmcWxjZmxqMHh4dhItY29zbW9zMXZtOTc1cGU5aHJnaHJkZmcyOXNzZG5raDBwbDRtNHZuY2tjYXcwGhEKBXVtdW9uEggxMDAwMDAwMBIHdGVzdGluZxJWCk4KRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiECCe1hNB91wGjbiOgplbqqsygC+Brf8gArC7pfpx9O0wASBAoCCH8SBBDAmgwaQC6qUgVmCGqyIr1nonOtijCZrS3qX/Mw40PVJKgV4zBReopRxA6HOVcvf0r8q+3c1ISD89jwpLvpqX4F3LQtGWU=",
+                    "result": {
+                        "data": "CgYKBHNlbmQ=",
+                        "log": "[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"send\"},{\"key\":\"sender\",\"value\":\"cosmos17yj45mrgvwezj9jlnhcgd2wr33ufqlcflj0xxv\"},{\"key\":\"module\",\"value\":\"bank\"}]},{\"type\":\"transfer\",\"attributes\":[{\"key\":\"recipient\",\"value\":\"cosmos1vm975pe9hrghrdfg29ssdnkh0pl4m4vnckcaw0\"},{\"key\":\"sender\",\"value\":\"cosmos17yj45mrgvwezj9jlnhcgd2wr33ufqlcflj0xxv\"},{\"key\":\"amount\",\"value\":\"10000000umuon\"}]}]}]",
+                        "gas_wanted": "200000",
+                        "gas_used": "50815",
+                        "events": [
+                            {
+                                "type": "message",
+                                "attributes": [
+                                    {
+                                        "key": "YWN0aW9u",
+                                        "value": "c2VuZA==",
+                                        "index": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "transfer",
+                                "attributes": [
+                                    {
+                                        "key": "cmVjaXBpZW50",
+                                        "value": "Y29zbW9zMXZtOTc1cGU5aHJnaHJkZmcyOXNzZG5raDBwbDRtNHZuY2tjYXcw",
+                                        "index": true
+                                    },
+                                    {
+                                        "key": "c2VuZGVy",
+                                        "value": "Y29zbW9zMTd5ajQ1bXJndndlemo5amxuaGNnZDJ3cjMzdWZxbGNmbGoweHh2",
+                                        "index": true
+                                    },
+                                    {
+                                        "key": "YW1vdW50",
+                                        "value": "MTAwMDAwMDB1bXVvbg==",
+                                        "index": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "message",
+                                "attributes": [
+                                    {
+                                        "key": "c2VuZGVy",
+                                        "value": "Y29zbW9zMTd5ajQ1bXJndndlemo5amxuaGNnZDJ3cjMzdWZxbGNmbGoweHh2",
+                                        "index": true
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "message",
+                                "attributes": [
+                                    {
+                                        "key": "bW9kdWxl",
+                                        "value": "YmFuaw==",
+                                        "index": true
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "events": {
+            "message.action": [
+                "send"
+            ],
+            "transfer.sender": [
+                "cosmos17yj45mrgvwezj9jlnhcgd2wr33ufqlcflj0xxv"
+            ],
+            "transfer.recipient": [
+                "cosmos1vm975pe9hrghrdfg29ssdnkh0pl4m4vnckcaw0"
+            ],
+            "transfer.amount": [
+                "10000000umuon"
+            ],
+            "message.sender": [
+                "cosmos17yj45mrgvwezj9jlnhcgd2wr33ufqlcflj0xxv"
+            ],
+            "message.module": [
+                "bank"
+            ],
+            "tm.event": [
+                "Tx"
+            ],
+            "tx.hash": [
+                "D9813DEBFA9D97FD7B2CEBC83AFC21EBD0C215CC366C5FC0BB6A1418F971F29C"
+            ],
+            "tx.height": [
+                "583709"
+            ]
+        }
+    }
+}
